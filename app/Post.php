@@ -178,6 +178,16 @@ class Post extends Model
     }
 
     /**
+     * Return just forms
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeForms($query)
+    {
+        return $query->where('type', 'form');
+    }
+
+    /**
      * Return posts that have a publish date in the past
      *
      * @return \Illuminate\Database\Query\Builder
@@ -246,8 +256,23 @@ class Post extends Model
         return $this->belongsTo('Clob\User');
     }
 
+    /**
+     * Relationship to the menu items that point to this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function menu_items()
     {
         return $this->morphMany('Clob\MenuItem', 'menuable');
+    }
+
+    /**
+     * Form submissions for this post (form types only)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function form_submissions()
+    {
+        return $this->hasMany('Clob\FormSubmission');
     }
 }

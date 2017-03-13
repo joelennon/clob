@@ -3,8 +3,11 @@
 namespace Clob\Http\Controllers;
 
 use Carbon\Carbon;
+use Clob\Http\Requests\SaveSubmission;
 use Clob\Post;
+use Clob\Repositories\Pages as PageRepository;
 use Clob\Repositories\Posts as PostRepository;
+use Clob\Repositories\FormSubmissions as FormSubmissionRepository;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -24,14 +27,31 @@ class BlogController extends Controller
     protected $posts;
 
     /**
+     * The page repository instance.
+     */
+    protected $pages;
+
+    /**
+     * The form submissions repository instance.
+     */
+    protected $form_submissions;
+
+    protected const ALLOWED_FIELDS = [
+        'name', 'email', 'message',
+    ];
+
+    /**
      * Create a new controller instance.
      *
      * @param PostRepository $posts
      * @return void
      */
-    public function __construct(PostRepository $posts)
+    public function __construct(PostRepository $posts, PageRepository $pages, FormSubmissionRepository $form_submissions)
     {
         $this->posts = $posts;
+        $this->pages = $pages;
+        $this->form_submissions = $form_submissions;
+
         $this->middleware('track')->only('index', 'show');
     }
 
@@ -70,6 +90,24 @@ class BlogController extends Controller
     }
 
     /**
+     * Process form submission
+     *
+     * @param \Clob\Post $post
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function process(SaveSubmission $request, Post $post)
+    {
+        // Only relevant for form post types
+        if($post->type !== 'form') abort(404);
+
+        // Save submission record
+        $submissionData = $request->only(self::ALLOWED_FIELDS);
+        $submission = $this->form_submissions->create($post, $submissionData);
+
+        return redirect()->back()->withStatus(trans('blog.form.submit_success'));
+    }
+
+    /**
      * Displays the blog home page
      *
      * @return \Illuminate\View\View
@@ -84,15 +122,26 @@ class BlogController extends Controller
             ->header('Content-Type', 'application/rss+xml');
     }
 
+    /**
+     * XML Sitemap
+     *
+     * @return \Illuminate\View\View
+     */
     public function sitemap()
     {
         $posts = $this->posts->published();
-        $view = view('blog.sitemap', compact('posts'));
+        $pages = $this->pages->all();
+        $view = view('blog.sitemap', compact('posts', 'pages'));
 
         return response($view)
             ->header('Content-Type', 'text/xml');
     }
 
+    /**
+     * Robots.txt
+     *
+     * @return \Illuminate\View\View
+     */
     public function robots()
     {
         $view = view('blog.robots');

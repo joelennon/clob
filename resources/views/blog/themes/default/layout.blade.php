@@ -28,7 +28,9 @@
 
 			@if($menu->count() > 0)
 				<nav>
-					<ul class="list-inline">
+					<button id="mobileMenuBtn" class="btn btn-block btn-info visible-xs">
+				        @lang('blog.menu')</button>
+					<ul id="mobileMenu">
 						@foreach($menu as $item)
 							<li>
 								@if($item->menuable_type === 'page')
@@ -52,7 +54,7 @@
 			@include('blog.themes.default._partials.social_links')
 		@endif
 		<p>
-			<a href="{{ route('blog.feed') }}">RSS Feed</a>
+			<a href="{{ route('blog.feed') }}">@lang('blog.rss')</a>
 			<span class="separator">&bull;</span>
 			<a href="https://github.com/theclob/clob" target="_blank">@lang('app.name.powered')</a>
 		</p>
@@ -61,6 +63,20 @@
 		@endif
 	</footer>
 
+	<script>
+		var mobileMenuBtn = document.getElementById('mobileMenuBtn'),
+			mobileMenu = document.getElementById('mobileMenu');
+
+		mobileMenuBtn.onclick = function(e) {
+			if(mobileMenu.dataset.status && mobileMenu.dataset.status === 'show') {
+				mobileMenu.dataset.status = 'hide';
+				mobileMenu.className = '';
+			} else {
+				mobileMenu.dataset.status = 'show';
+				mobileMenu.className = 'show';
+			}
+		};
+	</script>
 	@yield('scripts')
 </body>
 </html>

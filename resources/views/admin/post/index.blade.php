@@ -3,6 +3,7 @@
 @section('content')
 	<div class="panel panel-default">
 		<div class="panel-heading">
+			<div class="pull-right">Count: <strong>{{ $posts->total() }}</strong></div>
 			<h4 class="panel-title">@lang('admin.post.manage')</h4>
 		</div>
 		@if($posts->count() > 0)
@@ -30,6 +31,9 @@
 					@endforeach
 				</tbody>
 			</table>
+			@if($posts->lastPage() > 1)
+				<div class="panel-body text-center">{{ $posts->links() }}</div>
+			@endif
 		@else
 			<div class="panel-body">
 				@include('common.alerts')

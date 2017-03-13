@@ -7,17 +7,16 @@ use Clob\User;
 use Carbon\Carbon;
 use Clob\Repositories\Options as OptionRepository;
 
-class Posts extends Repository
+class Forms extends Repository
 {
 	/*
     |--------------------------------------------------------------------------
-    | Posts Repository
+    | Forms Repository
     |--------------------------------------------------------------------------
     |
-    | This class handles interacting with blog posts data in the database.
+    | This class handles interacting with forms data in the database.
     |
     */
-
     protected const ITEMS_PER_PAGE = 10;
 
     /**
@@ -33,53 +32,39 @@ class Posts extends Repository
     }
 
     /**
-     * Get all posts, most recent posts first.
+     * Get all forms, alphabetical by title.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function all()
     {
-        return Post::posts()->recentFirst()->get();
+        return Post::forms()->alpha()->get();
     }
 
     /**
-     * Get paged posts, most recent posts first.
+     * Get paged forms in alphabetical order by title.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function paged()
     {
-    	return Post::posts()->recentFirst()->paginate(self::ITEMS_PER_PAGE);
+    	return Post::forms()->alpha()->paginate(self::ITEMS_PER_PAGE);
     }
 
     /**
-     * Get published posts, most recent first.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function published()
-    {
-        $posts_per_page = $this->options->posts_per_page;
-
-    	return Post::published()->recentFirst()->paginate($posts_per_page);
-    }
-
-    /**
-     * Set post data values from passed array.
+     * Set form data values from passed array.
      *
      * @param \Clob\Post $post
      * @param array $data
      * @return \Clob\Post
      */
-    private function setPostData(Post $post, $data)
+    private function setFormData(Post $post, $data)
     {
-        $post->type = 'post';
+        $post->type = 'form';
         $post->title = $data['title'];
         $post->slug = $data['slug'];
         $post->subtitle = $data['subtitle'];
         $post->markdown_content = $data['markdown_content']; // The PostObserver class auto-converts this to HTML
-        $post->published_at = $data['published_at'];
-        $post->tags = $data['tags'];
         $post->seo_title = $data['seo_title'];
         $post->seo_description = $data['seo_description'];
         $post->seo_image_url = $data['seo_image_url'];
@@ -88,7 +73,7 @@ class Posts extends Repository
     }
 
     /**
-     * Create a new post.
+     * Create a new form.
      *
      * @param \Clob\User $user
      * @param array $data
@@ -96,14 +81,14 @@ class Posts extends Repository
      */
     public function create(User $user, $data)
     {
-        $post = $this->setPostData(new Post, $data);
+        $post = $this->setFormData(new Post, $data);
         $user->posts()->save($post);
 
         return $post;
     }
 
     /**
-     * Update an existing post.
+     * Update an existing form.
      *
      * @param \Clob\Post $post
      * @param array $data
@@ -111,14 +96,14 @@ class Posts extends Repository
      */
     public function update(Post $post, $data)
     {
-        $post = $this->setPostData($post, $data);
+        $post = $this->setFormData($post, $data);
         $post->save();
 
         return $post;
     }
 
     /**
-     * Delete an existing post.
+     * Delete an existing form.
      *
      * @param \Clob\Post $post
      * @return void
@@ -126,15 +111,5 @@ class Posts extends Repository
     public function delete(Post $post)
     {
         $post->delete();
-    }
-
-    public function previous(Post $post)
-    {
-        return Post::published()->previous($post)->first();
-    }
-
-    public function next(Post $post)
-    {
-        return Post::published()->next($post)->first();
     }
 }
