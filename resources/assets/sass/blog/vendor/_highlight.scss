@@ -1,1 +1,5 @@
 @import "node_modules/highlight.js/styles/default";
+
+.hljs-comment {
+    color: material-color('green', '800');
+}
