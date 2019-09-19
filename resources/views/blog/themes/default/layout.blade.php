@@ -24,7 +24,7 @@
 			@else
 				<h1>{{ $options->title }}</h1>
 			@endif
-			<p>{{ $options->description }}</p>
+			<p>{!! $options->description !!}</p>
 
 			@if($menu->count() > 0)
 				<nav>
