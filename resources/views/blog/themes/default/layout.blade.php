@@ -55,8 +55,6 @@
 		@endif
 		<p>
 			<a href="{{ route('blog.feed') }}">@lang('blog.rss')</a>
-			<span class="separator">&bull;</span>
-			<a href="https://github.com/theclob/clob" target="_blank">@lang('app.name.powered')</a>
 		</p>
 		@if($options->footer_text)
 			<p>{{ $options->footer_text }}</p>
