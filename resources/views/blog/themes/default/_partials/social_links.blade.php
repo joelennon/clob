@@ -1,6 +1,6 @@
 <p class="social">
 	@foreach($social_links as $link)
-		<a href="{{ $link->url }}" target="_blank" title="{{ ucfirst($link->type) }}">
+		<a href="{{ $link->url }}" target="_blank" title="{{ ucfirst($link->type) }}" rel="noreferrer">
 			@include('blog.themes.default._partials.social.' . $link->type)
 		</a>
 	@endforeach
