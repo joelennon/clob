@@ -55,7 +55,7 @@
 }
 
 .post-info {
-	color: $gray-light;
+	color: $gray-base;
 	text-transform: uppercase;
 	vertical-align: top;
 	letter-spacing: 1px;
@@ -79,7 +79,7 @@ footer {
 	}
 
 	a {
-		color: $gray-light;
+		color: $gray-base;
 
 		.social-icon, .social-icon path, .social-icon polygon {
 			fill: $gray;
